@@ -9,10 +9,10 @@
 
 #include <shader.h>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
+constexpr unsigned int WIDTH = 800;
+constexpr unsigned int HEIGHT = 600;
 
 float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -67,22 +67,20 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Portal Cube", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Portal Cube", nullptr, nullptr);
      if (!window) {
         std::cerr << "!Failed to create GLFW window!" << std::endl;
         glfwTerminate();
         return -1;
     }
-
     glfwMakeContextCurrent(window);
-
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "!Failed to initialize GLAD!\n";
         return -1;
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, WIDTH, HEIGHT);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -114,7 +112,7 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int width, height, nrChannels;
+    unsigned int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true); 
     unsigned char* data = stbi_load("../texture.jpg", &width, &height, &nrChannels, 0);
     if (data) {
@@ -137,7 +135,7 @@ int main() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
 
-        int width, height;
+        unsigned int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         float aspect = static_cast<float>(width) / height;
         glm::mat4 proj = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
@@ -154,7 +152,10 @@ int main() {
 
         glfwSwapBuffers(window);
     }
-
     glfwTerminate();
     return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
 }
